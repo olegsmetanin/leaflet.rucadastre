@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)http://twitter.github.com/bootstrap/examples/marketing-narrow.html# -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>RuCadastre Leaflet plugin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
+    <![endif]-->
+
+    <style type="text/css">
+
+/* Jumbotrons
+-------------------------------------------------- */
+
+/* Base class
+------------------------- */
+#overview {
+  background-color: #40454F;
+
+    color: #FFF;
+  text-decoration: none;
+  border-bottom: 2px solid #FFF;
+}
+
+#overview .lead {
+  color: #9EA1A6;
+}
+
+/* Sidenav for Docs
+-------------------------------------------------- */
+
+.bs-docs-sidenav {
+  width: 228px;
+  margin: 30px 0 0;
+  padding: 0;
+  background-color: #fff;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+     -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
+          box-shadow: 0 1px 4px rgba(0,0,0,.065);
+}
+.bs-docs-sidenav > li > a {
+  display: block;
+  width: 190px \9;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+  border: 1px solid #e5e5e5;
+}
+.bs-docs-sidenav > li:first-child > a {
+  -webkit-border-radius: 6px 6px 0 0;
+     -moz-border-radius: 6px 6px 0 0;
+          border-radius: 6px 6px 0 0;
+}
+.bs-docs-sidenav > li:last-child > a {
+  -webkit-border-radius: 0 0 6px 6px;
+     -moz-border-radius: 0 0 6px 6px;
+          border-radius: 0 0 6px 6px;
+}
+.bs-docs-sidenav > .active > a {
+  position: relative;
+  z-index: 2;
+  padding: 9px 15px;
+  border: 0;
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+  -webkit-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+     -moz-box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+          box-shadow: inset 1px 0 0 rgba(0,0,0,.1), inset -1px 0 0 rgba(0,0,0,.1);
+}
+/* Chevrons */
+.bs-docs-sidenav .icon-chevron-right {
+  float: right;
+  margin-top: 2px;
+  margin-right: -6px;
+  opacity: .25;
+}
+.bs-docs-sidenav > li > a:hover {
+  background-color: #f5f5f5;
+}
+.bs-docs-sidenav a:hover .icon-chevron-right {
+  opacity: .5;
+}
+.bs-docs-sidenav .active .icon-chevron-right,
+.bs-docs-sidenav .active a:hover .icon-chevron-right {
+  background-image: url(../img/glyphicons-halflings-white.png);
+  opacity: 1;
+}
+.bs-docs-sidenav.affix {
+  top: 0px;
+}
+.bs-docs-sidenav.affix-bottom {
+  position: absolute;
+  top: auto;
+  bottom: 270px;
+}
+
+
+.footer {
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+    margin-top: 70px;
+    padding: 30px 0;
+    text-align: center;
+}
+
+
+
+pre.prettyprint {
+    display: block;
+    width: auto;
+    overflow: auto;
+    white-space: pre;
+    word-wrap: normal;
+    padding: 10px;  
+  }
+
+
+    </style>
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.png">
+  </head>
+
+  <body data-target=".bs-docs-sidebar" data-spy="scroll">
+
+    <header class="jumbotron" id="overview">
+      <div class="container">
+        <h3>RuCadastre Leaflet plugin</h3>
+        <p class="lead">Support Russian Cadastre data layer (http://maps.rosreestr.ru)</p>
+      </div>
+    </header>
+
+
+    <div class="container">
+
+      <div class="row">
+        <div  class="span3 bs-docs-sidebar">
+          <ul id="navbar" class="nav nav-list bs-docs-sidenav affix-top">
+            <li><a href="#example"><i class="icon-chevron-right"></i> Example</a></li>
+            <li><a href="#usage"><i class="icon-chevron-right"></i> Usage</a></li>
+            <li><a href="#source"><i class="icon-chevron-right"></i> Source</a></li>
+          </ul>
+        </div>
+        <div class="span9">
+          <section id="example">
+            <h3>Example (<a href="fullscreen.html" target="_blank">fullscreen</a>)</h3>
+   
+            <div id="map" style="width:100%; height:600px; "></div>  
+              
+
+          </section>
+          <section id="usage">
+
+            <h3>Usage</h3>
+            <p>Add script</p>
+<pre class="prettyprint">
+&lt;script src=&quot;http://olegsmith.github.com/leaflet.rucadastre/leaflet.rucadastre.js&quot;&gt;&lt;/script&gt; 
+
+&lt;script&gt;
+    var map = L.map('map').setView([55.751667, 37.617778], 13);
+    L.control.scale().addTo(map);
+    L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+         maxZoom: 18
+        , attribution: 'Map data &amp;copy; &lt;a href=&quot;http://openstreetmap.org&quot;&gt;OpenStreetMap&lt;/a&gt; contributors, &lt;a href=&quot;http://creativecommons.org/licenses/by-sa/2.0/&quot;&gt;CC-BY-SA&lt;/a&gt;, Imagery &#xfffd; &lt;a href=&quot;http://cloudmade.com&quot;&gt;CloudMade&lt;/a&gt;'
+        }).addTo(map);
+    var rucadastre = new L.RuCadastre();
+    map.addLayer(rucadastre);
+&lt;/script&gt;
+</pre>
+
+
+          </section>
+
+          <section id="source">
+            <h3>Source</h3>
+            <div class="jumbotron">
+              <a class="btn btn-large btn-success" href="https://github.com/olegsmith/leaflet.rucadastre">View on GitHub</a>
+              <a class="btn btn-large btn-success" href="https://github.com/olegsmith/leaflet.rucadastre/zipball/master">.zip file</a>
+            </div>  
+
+          </section>      
+
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+      <div class="footer">
+        <div class="container">
+          <p class="copyright">
+            Leaflet.rucadastre maintained by <a href="https://github.com/olegsmith">olegsmith</a>
+          </p>
+        </div>  
+      </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+    <script src="leaflet.rucadastre.js"></script>    
+    <script type="text/javascript" src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true"></script>
+
+    <script>
+
+      var map = L.map('map').setView([55.751667, 37.617778], 13);
+
+      L.control.scale().addTo(map);
+
+      L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery � <a href="http://cloudmade.com">CloudMade</a>'
+      }).addTo(map);
+
+      var rucadastre = new L.RuCadastre();
+
+      map.addLayer(rucadastre);
+
+    </script>
+
+    <script>
+      $('#navbar').affix({offset:110}); 
+    </script>
+
+
+</body></html>
