@@ -34,8 +34,10 @@
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+        <script src="https://raw.github.com/calvinmetcalf/leaflet-ajax/master/src/ajax.js"></script>
 
-        <script src="leaflet.rucadastre.js"></script>       
+        <script src="leaflet.rucadastre.js"></script>
+        <script src="http://stevenlevithan.com/assets/misc/date.format.js"></script>         
         
         <script>
     
@@ -51,6 +53,64 @@
         var rucadastre=new L.RuCadastre();
 
         map.addLayer(rucadastre);
+
+        var ruCadastreIdentify = new L.RuCadastreIdentify({template:function(identify_data, find_data) {
+            var identify_attr = identify_data.results[0].attributes
+              , layerId = identify_data.results[0].layerId
+              , find_attr = find_data ? find_data.features[0].attributes : null;
+
+
+            return ''
+            + (layerId <= 3 ? ''
+              + '<div><b>Кадастровый номер</b>: '+identify_attr['Кадастровый номер земельного участка']+'</div>'
+              + '<ul class="nav nav-tabs" style="width:300px;">'
+              + '<li class="active"><a href="#rucadinfo" onclick="setActiveTab(event)">Информация</a></li>'
+              + '<li><a href="#rucadsrv" onclick="setActiveTab(event)">Услуги</a></li>'
+              + '</ul>' 
+              + '<div class="tab-content">'  
+              + '<div class="tab-pane active" id="rucadinfo" style="height:100px; overflow:auto">'                           
+              + '<div><b>Кадастровая единица</b>: '+identify_data.results[0].layerName+'</div>'   
+              + (find_data ? ''
+                + '<div><b>Адрес</b>: ' +find_attr['OBJECT_ADDRESS']+ '</div>'
+                + '<div><b>Декларированная площадь</b>: ' +find_attr['AREA_VALUE']+ ' кв. м</div>'
+                + '<div><b>Кадастровая стоимость</b>: ' +find_attr['CAD_COST']+ ' руб.</div>'
+                + '<div><b>Дата постановки на учет</b>: ' +(new Date(find_attr['DATE_CREATE'])).format("dd.mm.yyyy")+ '</div>'
+              + '' : '')
+              + '<div><b>Категория земель</b>: ' +identify_attr['Категория земель (код)']+ '</div>' 
+              + '<div><b>Статус земельного участка</b>:'+identify_attr['Статус земельного участка (код)']+'</div>'                 
+              + '</div>'  
+              + '<div class="tab-pane" id="rucadsrv" style="height:100px; overflow:auto">'
+              + '<a href="https://rosreestr.ru/wps/portal/cc_information_online?KN='+identify_attr['Кадастровый номер земельного участка']+'"  target="_blank">Справочная информация об объекте недвижимости в режиме онлайн</a><br/>'
+              + '<a href="https://rosreestr.ru/wps/portal/cc_gkn_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000"  target="_blank">Запрос о предоставлении сведений ГКН</a><br/>'
+              + '<a href="https://rosreestr.ru/wps/portal/cc_egrp_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000"  target="_blank">Запрос о предоставлении сведений ЕГРП</a><br/>'            
+              + '</div>'        
+              + '</div>'                    
+              + '' : ''
+            + '')
+
+            + (layerId > 3 ? ''
+              + '<div><b>Кадастровый номер</b>: '+identify_attr['Кадастровый номер']+'</div>'
+              + '<div><b>Кадастровая единица</b>: '+identify_data.results[0].layerName+'</div>'
+              + (layerId >= 12 ? ''
+                + '<div><b>Наименование</b>: '+identify_attr['Наименование']+'</div>'
+              + '' : '')
+              + (layerId < 12 ? ''
+                + '<div><b>Категория земель</b>: ' +identify_attr['Категория земель (код)']+ '</div>' 
+                + '<div><b>Вид разрешенного использования</b>: ' +identify_attr['Вид разрешенного использования (код)']+ '</div>'   
+              + '' : '')    
+            + '' : '');
+
+
+        }});
+
+        map.addControl(ruCadastreIdentify);    
+
+
+        function setActiveTab(e) {
+            e.preventDefault();
+            $(e.target).tab('show');
+        }
+
 
         </script>
     </body>

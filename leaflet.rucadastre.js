@@ -1,4 +1,12 @@
+/*! Copyright (c) 2013 Oleg Smith (http://olegsmith.com)
+ * Licensed under the MIT License (LICENSE.txt).
+ *
+ * L.RuCadastreIdentify uses L.Util.ajax (https://raw.github.com/calvinmetcalf/leaflet-ajax/master/src/ajax.js)
+ */
 
+/*
+ * L.RuCadastre
+ */
 
 L.RuCadastre = L.Class.extend({
     includes: L.Mixin.Events
@@ -10,6 +18,7 @@ L.RuCadastre = L.Class.extend({
         , format: 'PNG8'
         , transparent: 'true'
         , opacity: 1
+        , attribution:'<a href="http://maps.rosreestr.ru/PortalOnline/" target="_blank">Росреестр</a>'
 
     }
 
@@ -20,6 +29,11 @@ L.RuCadastre = L.Class.extend({
         L.setOptions(this, options);
         this._url = this.options.url;      
     }
+
+    , setOptions: function (newOptions) {
+        L.setOptions(this, newOptions);
+        this._reset();        
+    } 
 
     , onAdd: function (map) {
         this._map = map;
@@ -33,7 +47,6 @@ L.RuCadastre = L.Class.extend({
         map.on('viewreset', this._reset, this);
         map.on('moveend', this._reset, this);
         map.on('zoomend', this._reset, this);
-        //map.on('click', this._click, this);
 
 
         if (map.options.zoomAnimation && L.Browser.any3d) {
@@ -49,7 +62,6 @@ L.RuCadastre = L.Class.extend({
         map.off('viewreset', this._reset, this);
         map.off('moveend', this._reset, this);       
         map.off('zoomend', this._reset, this);
-        //map.off('click', this._click, this); 
 
         if (map.options.zoomAnimation) {
             map.off('zoomanim', this._animateZoom, this);
@@ -81,6 +93,10 @@ L.RuCadastre = L.Class.extend({
             pane.insertBefore(this._image, pane.firstChild);
         }
         return this;
+    }
+
+    , getAttribution: function () {
+        return this.options.attribution;
     }
 
     , _initImage: function () {
@@ -121,6 +137,11 @@ L.RuCadastre = L.Class.extend({
             url += layers;
         }
 
+        if (this.options.layerDefs) {
+            var layerDefs = '&layerDefs=' + this.options.layerDefs;
+            url += layerDefs;
+        }
+
         return url; // this._url + '/export?' + bbox + size + layers + format + transparent + '&f=image';
     }
 
@@ -141,6 +162,8 @@ L.RuCadastre = L.Class.extend({
     , _reset: function () {
         //console.log('_reset');
         var that=this; 
+        
+        that._bounds = that._map.getBounds();
 
         if (that.imgTimer) {
           window.clearTimeout(that.imgTimer);
@@ -187,6 +210,113 @@ L.RuCadastre = L.Class.extend({
         L.DomUtil.setOpacity(this._image, this.options.opacity);
     }
 
-    , _click:function(e) {
+});
+
+
+/*
+ * L.RuCadastreIdentify
+ */
+
+L.RuCadastreIdentify = L.Control.extend({
+    options: {
+                template:function(identify_data, find_data) {
+                    var attr=identify_data.results[0].attributes;
+                    return 'Кадастровый номер:'+attr['Кадастровый номер']+'<br/>'+
+                    'Категория земель (код):'+attr['Категория земель (код)']+'<br/>'+
+                    'Вид разрешенного использования (код):'+attr['Вид разрешенного использования (код)']+'<br/>'+
+                    'Значение кадастровой стоимости:'+attr['Значение кадастровой стоимости']+'<br/>';
+                }
+                , url:'http://maps.rosreestr.ru/ArcGIS/rest/services/CadastreNew/CadastreSelected/MapServer'
+                , findurl:'http://maps.rosreestr.ru/ArcGIS/rest/services/CadastreNew/Cadastre/MapServer/exts/GKNServiceExtension/online/parcel'
     }
+
+    , onAdd: function (map) {
+
+        this._map = map;
+
+        map.on('click', this._identify, this);
+        map.on('popupclose', this._unselect, this);
+
+
+        return L.DomUtil.create('div', 'leaflet-control-rucadastre-identify');;
+    }
+
+    , onRemove: function (map) {
+        map.off('click', this._identify, this);
+        map.off('popupclose', this._unselect, this);
+    }
+
+    , _identify:function(e) {
+        var that=this
+            , xy = L.CRS.EPSG900913.project(e.latlng)
+            , bnds = this._map.getBounds()
+            , sw = L.CRS.EPSG900913.project(bnds.getSouthWest())
+            , ne = L.CRS.EPSG900913.project(bnds.getNorthEast())
+            , idenifyUrl= this.options.url+'/identify?f=json&geometry={%22x%22%3A'+xy.x+'%2C%22y%22%3A'+xy.y+'%2C'+
+            '%22spatialReference%22%3A{%22wkid%22%3A102100}}&tolerance=0&returnGeometry=false'+
+            '&mapExtent={%22xmin%22%3A'+sw.x+'%2C%22ymin%22%3A'+sw.y+'%2C%22xmax%22%3A'+ne.x+'%2C%22ymax%22%3A'+ne.y+'%2C'+
+            '%22spatialReference%22%3A{%22wkid%22%3A102100}}'+
+            '&imageDisplay=1634%2C517%2C96&geometryType=esriGeometryPoint&sr=102100&layers=top';
+
+
+        L.Util.ajax(idenifyUrl,{jsonp:true},function(identify_data){
+            //console.log(identify_data);
+            if (identify_data.results.length>0) {
+                var layers = 'show%3A'
+                    , id = identify_data.results[0].value
+                    , layerId = identify_data.results[0].layerId
+                    , lids = []
+                    , layerDefs = '';
+
+                if (layerId<4) {
+                    lids=[2,3,4]; 
+                } else if (layerId<9) {
+                    lids=[5,6,7,8]
+                } else if (layerId<15) {
+                    lids=[9,10,11,12,13,14]    
+                } else {
+                    lids=[15,16,17,18,19,20]   
+                }
+
+                for (var i=0;i<lids.length-1;i++) {
+                    layers=layers+lids[i]+'%3A';
+                    layerDefs=layerDefs+lids[i]+'%3APKK_ID%20LIKE%20%27'+id+'%27%3B';
+                }
+                    layers=layers+lids[i];
+                    layerDefs=layerDefs+lids[i]+'%3APKK_ID%20LIKE%20%27'+id+'%27';
+
+
+                if (typeof that._selected==='undefined') {
+                    that._selected = new L.RuCadastre({url:that.options.url, layers:layers, layerDefs:layerDefs, opacity: 0.5});
+                    that._map.addLayer(that._selected);
+                } else {
+                    that._selected.setOptions({layers:layers, layerDefs:layerDefs});
+                }
+
+                that._popup=new L.Popup();
+                that._popup.setLatLng(e.latlng).setContent(that.options.template(identify_data, null)).addTo(that._map);
+                that._map.openPopup(that._popup);      
+
+                var cadnum = identify_data.results[0].attributes['Строковый идентификатор ИПГУ']
+                    , findUrl = that.options.findurl + '/find?cadNums=[%27'+cadnum+'%27]&onlyAttributes=false&returnGeometry=true&f=json'
+                if (!(typeof cadnum === 'undefined')) {
+                    L.Util.ajax(findUrl,{jsonp:true},function(find_data){
+                        if (find_data.features.length>0) {
+                            that._popup.setContent(that.options.template(identify_data, find_data));
+                        }    
+                    });                    
+                }
+            }
+        });
+
+    }
+
+    , _unselect:function(e) {
+        var that=this;
+        if ((that._popup===e.popup) && !(typeof that._selected==='undefined')) {
+            that._map.removeLayer(that._selected);
+            delete that._selected;
+        }
+    }
+
 });
