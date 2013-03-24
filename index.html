@@ -128,7 +128,7 @@ pre.prettyprint {
     overflow: auto;
     white-space: pre;
     word-wrap: normal;
-    padding: 10px;  
+    padding: 10px;
   }
 
 
@@ -166,6 +166,7 @@ pre.prettyprint {
             <li><a href="#example"><i class="icon-chevron-right"></i> Example</a></li>
             <li><a href="#layer"><i class="icon-chevron-right"></i> RuCadastre layer</a></li>
             <li><a href="#identify"><i class="icon-chevron-right"></i> Identify tool</a></li>
+            <li><a href="#geocoding"><i class="icon-chevron-right"></i> Geocoding tool</a></li>
             <li><a href="#source"><i class="icon-chevron-right"></i> Source code</a></li>
           </ul>
         </div>
@@ -174,10 +175,17 @@ pre.prettyprint {
             <div class="page-header">
               <h1>Example (<a href="fullscreen.html" target="_blank">fullscreen</a>)</h1>
             </div>
-            <h3>RuCadastre layer with identify tool</h3>
-   
-            <div id="map" style="width:100%; height:600px; "></div>  
-              
+            <h3>RuCadastre layer with identify and geocoding tool</h3>
+
+            <form class="bs-docs-example form-search">
+              <div class="input-append">
+                <input id="geocodeinput" type="text" class="span2 search-query">
+                <button id="geocodebutton" type="submit" class="btn">Search</button>
+              </div>
+            </form>
+
+            <div id="map" style="width:100%; height:600px; "></div>
+
 
           </section>
           <section id="layer">
@@ -186,7 +194,7 @@ pre.prettyprint {
             </div>
             <h3>Usage</h3>
 <pre class="prettyprint linenums">
-&lt;script src=&quot;http://olegsmith.github.com/leaflet.rucadastre/leaflet.rucadastre.js&quot;&gt;&lt;/script&gt; 
+&lt;script src=&quot;http://olegsmith.github.com/leaflet.rucadastre/leaflet.rucadastre.js&quot;&gt;&lt;/script&gt;
 
 &lt;script&gt;
     var map = L.map('map').setView([55.751667, 37.617778], 13);
@@ -207,14 +215,14 @@ pre.prettyprint {
             </div>
             <h3>Usage</h3>
 <pre class="prettyprint linenums">
-&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt; 
+&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt;
 
 &lt;script&gt;
     var ruCadastreIdentify = new L.RuCadastreIdentify();
     map.addLayer(ruCadastreIdentify);
 &lt;/script&gt;
 </pre>
-            
+
             <h3>Options</h3>
 
             <table class="table table-bordered table-striped">
@@ -240,26 +248,73 @@ pre.prettyprint {
 <pre class="prettyprint linenums">
 &lt;head&gt;
 &lt;link href=&quot;http://twitter.github.com/bootstrap/assets/css/bootstrap.css&quot; rel=&quot;stylesheet&quot;&gt;
-&lt;/head&gt; 
+&lt;/head&gt;
 
 &lt;body&gt;
-&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt; 
+&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;http://stevenlevithan.com/assets/misc/date.format.js&quot;&gt;&lt;/script&gt;  
+&lt;script src=&quot;http://stevenlevithan.com/assets/misc/date.format.js&quot;&gt;&lt;/script&gt;
 
 
 &lt;script&gt;
-      var ruCadastreIdentify = new L.RuCadastreIdentify({template:function(identify_data, find_data) {<br/>        var identify_attr = identify_data.results[0].attributes<br/>          , layerId = identify_data.results[0].layerId<br/>          , find_attr = find_data ? find_data.features[0].attributes : null;<br/><br/><br/>        return ''<br/>        + (layerId &lt;= 3 ? ''<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровый номер&lt;/b&gt;: '+identify_attr['Кадастровый номер земельного участка']+'&lt;/div&gt;'<br/>          + '&lt;ul class=&quot;nav nav-tabs&quot; style=&quot;width:300px;&quot;&gt;'<br/>          + '&lt;li class=&quot;active&quot;&gt;&lt;a href=&quot;#rucadinfo&quot; onclick=&quot;setActiveTab(event)&quot;&gt;Информация&lt;/a&gt;&lt;/li&gt;'<br/>          + '&lt;li&gt;&lt;a href=&quot;#rucadsrv&quot; onclick=&quot;setActiveTab(event)&quot;&gt;Услуги&lt;/a&gt;&lt;/li&gt;'<br/>          + '&lt;/ul&gt;' <br/>          + '&lt;div class=&quot;tab-content&quot;&gt;'  <br/>          + '&lt;div class=&quot;tab-pane active&quot; id=&quot;rucadinfo&quot; style=&quot;height:100px; overflow:auto&quot;&gt;'                           <br/>          + '&lt;div&gt;&lt;b&gt;Кадастровая единица&lt;/b&gt;: '+identify_data.results[0].layerName+'&lt;/div&gt;'   <br/>          + (find_data ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Адрес&lt;/b&gt;: ' +find_attr['OBJECT_ADDRESS']+ '&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Декларированная площадь&lt;/b&gt;: ' +find_attr['AREA_VALUE']+ ' кв. м&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Кадастровая стоимость&lt;/b&gt;: ' +find_attr['CAD_COST']+ ' руб.&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Дата постановки на учет&lt;/b&gt;: ' +(new Date(find_attr['DATE_CREATE'])).format(&quot;dd.mm.yyyy&quot;)+ '&lt;/div&gt;'<br/>          + '' : '')<br/>          + '&lt;div&gt;&lt;b&gt;Категория земель&lt;/b&gt;: ' +identify_attr['Категория земель (код)']+ '&lt;/div&gt;' <br/>          + '&lt;div&gt;&lt;b&gt;Статус земельного участка&lt;/b&gt;: '+identify_attr['Статус земельного участка (код)']+'&lt;/div&gt;'                 <br/>          + '&lt;/div&gt;'  <br/>          + '&lt;div class=&quot;tab-pane&quot; id=&quot;rucadsrv&quot; style=&quot;height:100px; overflow:auto&quot;&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_information_online?KN='+identify_attr['Кадастровый номер земельного участка']+'&quot;  target=&quot;_blank&quot;&gt;Справочная информация об объекте недвижимости в режиме онлайн&lt;/a&gt;&lt;br/&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_gkn_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000&quot;  target=&quot;_blank&quot;&gt;Запрос о предоставлении сведений ГКН&lt;/a&gt;&lt;br/&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_egrp_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000&quot;  target=&quot;_blank&quot;&gt;Запрос о предоставлении сведений ЕГРП&lt;/a&gt;&lt;br/&gt;'            <br/>          + '&lt;/div&gt;'        <br/>          + '&lt;/div&gt;'                    <br/>          + '' : ''<br/>        + '')<br/><br/>        + (layerId &gt; 3 ? ''<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровый номер&lt;/b&gt;: '+identify_attr['Кадастровый номер']+'&lt;/div&gt;'<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровая единица&lt;/b&gt;: '+identify_data.results[0].layerName+'&lt;/div&gt;'<br/>          + (layerId &gt;= 12 ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Наименование&lt;/b&gt;: '+identify_attr['Наименование']+'&lt;/div&gt;'<br/>          + '' : '')<br/>          + (layerId &lt; 12 ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Категория земель&lt;/b&gt;: ' +identify_attr['Категория земель (код)']+ '&lt;/div&gt;' <br/>            + '&lt;div&gt;&lt;b&gt;Вид разрешенного использования&lt;/b&gt;: ' +identify_attr['Вид разрешенного использования (код)']+ '&lt;/div&gt;'   <br/>          + '' : '')    <br/>        + '' : '');<br/><br/><br/>      }});<br/><br/>      map.addControl(ruCadastreIdentify);  
+      var ruCadastreIdentify = new L.RuCadastreIdentify({template:function(identify_data, find_data) {<br/>        var identify_attr = identify_data.results[0].attributes<br/>          , layerId = identify_data.results[0].layerId<br/>          , find_attr = find_data ? find_data.features[0].attributes : null;<br/><br/><br/>        return ''<br/>        + (layerId &lt;= 3 ? ''<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровый номер&lt;/b&gt;: '+identify_attr['Кадастровый номер земельного участка']+'&lt;/div&gt;'<br/>          + '&lt;ul class=&quot;nav nav-tabs&quot; style=&quot;width:300px;&quot;&gt;'<br/>          + '&lt;li class=&quot;active&quot;&gt;&lt;a href=&quot;#rucadinfo&quot; onclick=&quot;setActiveTab(event)&quot;&gt;Информация&lt;/a&gt;&lt;/li&gt;'<br/>          + '&lt;li&gt;&lt;a href=&quot;#rucadsrv&quot; onclick=&quot;setActiveTab(event)&quot;&gt;Услуги&lt;/a&gt;&lt;/li&gt;'<br/>          + '&lt;/ul&gt;' <br/>          + '&lt;div class=&quot;tab-content&quot;&gt;'  <br/>          + '&lt;div class=&quot;tab-pane active&quot; id=&quot;rucadinfo&quot; style=&quot;height:100px; overflow:auto&quot;&gt;'                           <br/>          + '&lt;div&gt;&lt;b&gt;Кадастровая единица&lt;/b&gt;: '+identify_data.results[0].layerName+'&lt;/div&gt;'   <br/>          + (find_data ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Адрес&lt;/b&gt;: ' +find_attr['OBJECT_ADDRESS']+ '&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Декларированная площадь&lt;/b&gt;: ' +find_attr['AREA_VALUE']+ ' кв. м&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Кадастровая стоимость&lt;/b&gt;: ' +find_attr['CAD_COST']+ ' руб.&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Дата постановки на учет&lt;/b&gt;: ' +(new Date(find_attr['DATE_CREATE'])).format(&quot;dd.mm.yyyy&quot;)+ '&lt;/div&gt;'<br/>          + '' : '')<br/>          + '&lt;div&gt;&lt;b&gt;Категория земель&lt;/b&gt;: ' +identify_attr['Категория земель (код)']+ '&lt;/div&gt;' <br/>          + '&lt;div&gt;&lt;b&gt;Статус земельного участка&lt;/b&gt;: '+identify_attr['Статус земельного участка (код)']+'&lt;/div&gt;'                 <br/>          + '&lt;/div&gt;'  <br/>          + '&lt;div class=&quot;tab-pane&quot; id=&quot;rucadsrv&quot; style=&quot;height:100px; overflow:auto&quot;&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_information_online?KN='+identify_attr['Кадастровый номер земельного участка']+'&quot;  target=&quot;_blank&quot;&gt;Справочная информация об объекте недвижимости в режиме онлайн&lt;/a&gt;&lt;br/&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_gkn_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000&quot;  target=&quot;_blank&quot;&gt;Запрос о предоставлении сведений ГКН&lt;/a&gt;&lt;br/&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_egrp_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000&quot;  target=&quot;_blank&quot;&gt;Запрос о предоставлении сведений ЕГРП&lt;/a&gt;&lt;br/&gt;'            <br/>          + '&lt;/div&gt;'        <br/>          + '&lt;/div&gt;'                    <br/>          + '' : ''<br/>        + '')<br/><br/>        + (layerId &gt; 3 ? ''<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровый номер&lt;/b&gt;: '+identify_attr['Кадастровый номер']+'&lt;/div&gt;'<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровая единица&lt;/b&gt;: '+identify_data.results[0].layerName+'&lt;/div&gt;'<br/>          + (layerId &gt;= 12 ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Наименование&lt;/b&gt;: '+identify_attr['Наименование']+'&lt;/div&gt;'<br/>          + '' : '')<br/>          + (layerId &lt; 12 ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Категория земель&lt;/b&gt;: ' +identify_attr['Категория земель (код)']+ '&lt;/div&gt;' <br/>            + '&lt;div&gt;&lt;b&gt;Вид разрешенного использования&lt;/b&gt;: ' +identify_attr['Вид разрешенного использования (код)']+ '&lt;/div&gt;'   <br/>          + '' : '')    <br/>        + '' : '');<br/><br/><br/>      }});<br/><br/>      map.addControl(ruCadastreIdentify);
 
       function setActiveTab(e) {<br/>        e.preventDefault();<br/>        $(e.target).tab('show');<br/>      }
 
 &lt;/script&gt;
-&lt;/body&gt; 
+&lt;/body&gt;
 </pre>
 
 
 
           </section>
+
+          <section id="geocoding">
+            <div class="page-header">
+              <h1>Geocoding tool</h1>
+            </div>
+            <h3>Usage</h3>
+<pre class="prettyprint linenums">
+&lt;script src=&quot;http://olegsmith.github.com/leaflet.rucadastre/leaflet.rucadastre-geocoding.js&quot;&gt;&lt;/script&gt;
+
+&lt;script&gt;
+      var ruCadastreGeocoding = new L.RuCadastreGeocoding();
+      map.addControl(ruCadastreGeocoding);
+
+      $('#geocodeinput').on('keydown', function(e) {
+        if (e.keyCode == 13 ) {
+          e.preventDefault();
+          ruCadastreGeocoding.geocode( $('#geocodeinput').val())
+        }
+      });
+
+      $('#geocodebutton').on('click', function(e) {
+        e.preventDefault();
+        ruCadastreGeocoding.geocode( $('#geocodeinput').val())
+      });
+&lt;/script&gt;
+</pre>
+            <h3>Methods</h3>
+            <table class="table table-bordered table-striped">
+            <thead>
+             <tr>
+               <th style="width: 100px;">Name</th>
+               <th style="width: 50px;">agruments</th>
+               <th>description</th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+               <td>geocode</td>
+               <td>parcel number</td>
+               <td>Search parcel and zoom map to center point</td>
+             </tr>
+            </tbody>
+          </table>
+
+
+          </section>
+
 
           <section id="source">
             <div class="page-header">
@@ -268,9 +323,9 @@ pre.prettyprint {
             <div class="jumbotron">
               <a class="btn btn-large btn-success" href="https://github.com/olegsmith/leaflet.rucadastre">View on GitHub</a>
               <a class="btn btn-large btn-success" href="https://github.com/olegsmith/leaflet.rucadastre/zipball/master">.zip file</a>
-            </div>  
+            </div>
 
-          </section>      
+          </section>
 
         </div>
       </div>
@@ -281,7 +336,7 @@ pre.prettyprint {
           <p class="copyright">
             Leaflet.rucadastre maintained by <a href="https://github.com/olegsmith">olegsmith</a>
           </p>
-        </div>  
+        </div>
       </div>
 
     <!-- Le javascript
@@ -294,8 +349,9 @@ pre.prettyprint {
     <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
 
     <script src="leaflet.rucadastre.js"></script>
+    <script src="leaflet.rucadastre-geocoding.js"></script>
 
-    <script src="http://stevenlevithan.com/assets/misc/date.format.js"></script>    
+    <script src="http://stevenlevithan.com/assets/misc/date.format.js"></script>
 
     <script>
 
@@ -324,25 +380,25 @@ pre.prettyprint {
           + '<ul class="nav nav-tabs" style="width:300px;">'
           + '<li class="active"><a href="#rucadinfo" onclick="setActiveTab(event)">Информация</a></li>'
           + '<li><a href="#rucadsrv" onclick="setActiveTab(event)">Услуги</a></li>'
-          + '</ul>' 
-          + '<div class="tab-content">'  
-          + '<div class="tab-pane active" id="rucadinfo" style="height:100px; overflow:auto">'                           
-          + '<div><b>Кадастровая единица</b>: '+identify_data.results[0].layerName+'</div>'   
+          + '</ul>'
+          + '<div class="tab-content">'
+          + '<div class="tab-pane active" id="rucadinfo" style="height:100px; overflow:auto">'
+          + '<div><b>Кадастровая единица</b>: '+identify_data.results[0].layerName+'</div>'
           + (find_data ? ''
             + '<div><b>Адрес</b>: ' +find_attr['OBJECT_ADDRESS']+ '</div>'
             + '<div><b>Декларированная площадь</b>: ' +find_attr['AREA_VALUE']+ ' кв. м</div>'
             + '<div><b>Кадастровая стоимость</b>: ' +find_attr['CAD_COST']+ ' руб.</div>'
             + '<div><b>Дата постановки на учет</b>: ' +(new Date(find_attr['DATE_CREATE'])).format("dd.mm.yyyy")+ '</div>'
           + '' : '')
-          + '<div><b>Категория земель</b>: ' +identify_attr['Категория земель (код)']+ '</div>' 
-          + '<div><b>Статус земельного участка</b>: '+identify_attr['Статус земельного участка (код)']+'</div>'                 
-          + '</div>'  
+          + '<div><b>Категория земель</b>: ' +identify_attr['Категория земель (код)']+ '</div>'
+          + '<div><b>Статус земельного участка</b>: '+identify_attr['Статус земельного участка (код)']+'</div>'
+          + '</div>'
           + '<div class="tab-pane" id="rucadsrv" style="height:100px; overflow:auto">'
           + '<a href="https://rosreestr.ru/wps/portal/cc_information_online?KN='+identify_attr['Кадастровый номер земельного участка']+'"  target="_blank">Справочная информация об объекте недвижимости в режиме онлайн</a><br/>'
           + '<a href="https://rosreestr.ru/wps/portal/cc_gkn_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000"  target="_blank">Запрос о предоставлении сведений ГКН</a><br/>'
-          + '<a href="https://rosreestr.ru/wps/portal/cc_egrp_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000"  target="_blank">Запрос о предоставлении сведений ЕГРП</a><br/>'            
-          + '</div>'        
-          + '</div>'                    
+          + '<a href="https://rosreestr.ru/wps/portal/cc_egrp_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000"  target="_blank">Запрос о предоставлении сведений ЕГРП</a><br/>'
+          + '</div>'
+          + '</div>'
           + '' : ''
         + '')
 
@@ -353,16 +409,32 @@ pre.prettyprint {
             + '<div><b>Наименование</b>: '+identify_attr['Наименование']+'</div>'
           + '' : '')
           + (layerId < 12 ? ''
-            + '<div><b>Категория земель</b>: ' +identify_attr['Категория земель (код)']+ '</div>' 
-            + '<div><b>Вид разрешенного использования</b>: ' +identify_attr['Вид разрешенного использования (код)']+ '</div>'   
-          + '' : '')    
+            + '<div><b>Категория земель</b>: ' +identify_attr['Категория земель (код)']+ '</div>'
+            + '<div><b>Вид разрешенного использования</b>: ' +identify_attr['Вид разрешенного использования (код)']+ '</div>'
+          + '' : '')
         + '' : '');
 
 
       }});
 
-      map.addControl(ruCadastreIdentify);    
+      map.addControl(ruCadastreIdentify);
 
+      var ruCadastreGeocoding = new L.RuCadastreGeocoding();
+
+      map.addControl(ruCadastreGeocoding);
+
+      $('#geocodeinput').on('keydown', function(e) {
+
+        if (e.keyCode == 13 ) {
+          e.preventDefault();
+          ruCadastreGeocoding.geocode( $('#geocodeinput').val())
+        }
+      });
+
+      $('#geocodebutton').on('click', function(e) {
+        e.preventDefault();
+        ruCadastreGeocoding.geocode( $('#geocodeinput').val())
+      });
 
       function setActiveTab(e) {
         e.preventDefault();
@@ -370,12 +442,12 @@ pre.prettyprint {
       }
 
       // make code pretty
-      window.prettyPrint && prettyPrint() 
+      window.prettyPrint && prettyPrint()
 
     </script>
 
     <script>
-      $('#navbar').affix({offset:110}); 
+      $('#navbar').affix({offset:110});
     </script>
 
 </body></html>
