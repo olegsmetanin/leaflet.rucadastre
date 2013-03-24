@@ -27,19 +27,23 @@ L.RuCadastre = L.Class.extend({
 
     , initialize: function (options) {
         L.setOptions(this, options);
-        this._url = this.options.url;      
+        this._url = this.options.url;
     }
 
     , setOptions: function (newOptions) {
         L.setOptions(this, newOptions);
-        this._reset();        
-    } 
+        this._reset();
+    }
 
     , onAdd: function (map) {
         this._map = map;
 
         if (!this._image) {
             this._initImage();
+        }
+
+        if (!this._bounds) {
+            this._bounds = this._map.getBounds();
         }
 
         map._panes.overlayPane.appendChild(this._image);
@@ -60,7 +64,7 @@ L.RuCadastre = L.Class.extend({
         map.getPanes().overlayPane.removeChild(this._image);
 
         map.off('viewreset', this._reset, this);
-        map.off('moveend', this._reset, this);       
+        map.off('moveend', this._reset, this);
         map.off('zoomend', this._reset, this);
 
         if (map.options.zoomAnimation) {
@@ -131,7 +135,7 @@ L.RuCadastre = L.Class.extend({
             , format = '&format=' + this.options.format
             , transparent = '&transparent=' + this.options.transparent
             , url = this._url + '/export?' + bbox + size + format + transparent + '&f=image';
-        
+
         if (this.options.layers) {
             var layers = '&layers=' + this.options.layers;
             url += layers;
@@ -161,18 +165,25 @@ L.RuCadastre = L.Class.extend({
 
     , _reset: function () {
         //console.log('_reset');
-        var that=this; 
-        
-        that._bounds = that._map.getBounds();
+        var that=this;
+
+        var image = that._image
+            , topLeft = that._map.latLngToLayerPoint(that._bounds.getNorthWest())
+            , size = that._map.latLngToLayerPoint(that._bounds.getSouthEast())._subtract(topLeft);
+
+        L.DomUtil.setPosition(image, topLeft);
+
+        image.style.width = size.x + 'px';
+        image.style.height = size.y + 'px';
 
         if (that.imgTimer) {
           window.clearTimeout(that.imgTimer);
         }
 
         that.imgTimer = window.setTimeout(function() {
-            
+
             that.imgTimerCounter++;
-            
+
             var cacheimg = new Image();
             cacheimg.src = that._getImageUrl();
 
@@ -180,12 +191,10 @@ L.RuCadastre = L.Class.extend({
 
                 that.imgTimerCounter--;
 
-                //console.log('inside onload', that.timerCounter);
-
                 if (that.imgTimerCounter == 0) {
 
                     that._bounds = that._map.getBounds();
-                    
+
                     var image = that._image
                         , topLeft = that._map.latLngToLayerPoint(that._bounds.getNorthWest())
                         , size = that._map.latLngToLayerPoint(that._bounds.getSouthEast())._subtract(topLeft);
@@ -272,13 +281,13 @@ L.RuCadastreIdentify = L.Control.extend({
                     , layerDefs = '';
 
                 if (layerId<4) {
-                    lids=[2,3,4]; 
+                    lids=[2,3,4];
                 } else if (layerId<9) {
                     lids=[5,6,7,8]
                 } else if (layerId<15) {
-                    lids=[9,10,11,12,13,14]    
+                    lids=[9,10,11,12,13,14]
                 } else {
-                    lids=[15,16,17,18,19,20]   
+                    lids=[15,16,17,18,19,20]
                 }
 
                 for (var i=0;i<lids.length-1;i++) {
@@ -298,7 +307,7 @@ L.RuCadastreIdentify = L.Control.extend({
 
                 that._popup=new L.Popup();
                 that._popup.setLatLng(e.latlng).setContent(that.options.template(identify_data, null)).addTo(that._map);
-                that._map.openPopup(that._popup);      
+                that._map.openPopup(that._popup);
 
                 var cadnum = identify_data.results[0].attributes['Строковый идентификатор ИПГУ']
                     , findUrl = that.options.findurl + '/find?cadNums=[%27'+cadnum+'%27]&onlyAttributes=false&returnGeometry=true&f=json'
@@ -307,8 +316,8 @@ L.RuCadastreIdentify = L.Control.extend({
                     .done(function(find_data){
                         if (find_data.features.length>0) {
                             that._popup.setContent(that.options.template(identify_data, find_data));
-                        }    
-                    });                    
+                        }
+                    });
                 }
             }
         });
