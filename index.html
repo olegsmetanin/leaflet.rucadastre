@@ -10,10 +10,13 @@
     <!-- Le styles -->
     <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <link href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" rel="stylesheet" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
     <![endif]-->
+
+    <link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet" />
+
 
     <style type="text/css">
 
@@ -33,6 +36,11 @@
 #overview .lead {
   color: #9EA1A6;
 }
+
+section {
+  padding-top: 30px;
+}
+
 
 /* Sidenav for Docs
 -------------------------------------------------- */
@@ -156,28 +164,30 @@ pre.prettyprint {
         <div  class="span3 bs-docs-sidebar">
           <ul id="navbar" class="nav nav-list bs-docs-sidenav affix-top">
             <li><a href="#example"><i class="icon-chevron-right"></i> Example</a></li>
-            <li><a href="#usage"><i class="icon-chevron-right"></i> Usage</a></li>
-            <li><a href="#source"><i class="icon-chevron-right"></i> Source</a></li>
+            <li><a href="#layer"><i class="icon-chevron-right"></i> RuCadastre layer</a></li>
+            <li><a href="#identify"><i class="icon-chevron-right"></i> Identify tool</a></li>
+            <li><a href="#source"><i class="icon-chevron-right"></i> Source code</a></li>
           </ul>
         </div>
         <div class="span9">
           <section id="example">
-            <h3>Example (<a href="fullscreen.html" target="_blank">fullscreen</a>)</h3>
+            <div class="page-header">
+              <h1>Example (<a href="fullscreen.html" target="_blank">fullscreen</a>)</h1>
+            </div>
+            <h3>RuCadastre layer with identify tool</h3>
    
             <div id="map" style="width:100%; height:600px; "></div>  
               
 
           </section>
-          <section id="usage">
-
-            <h3>Usage тест1</h3>
-            <p>Add script</p>
-<pre class="prettyprint">
+          <section id="layer">
+            <div class="page-header">
+              <h1>RuCadastre layer</h1>
+            </div>
+            <h3>Usage</h3>
+<pre class="prettyprint linenums">
 &lt;script src=&quot;http://olegsmith.github.com/leaflet.rucadastre/leaflet.rucadastre.js&quot;&gt;&lt;/script&gt; 
-</pre>
 
-            <p>Add RuCadastre layer</p>
-<pre class="prettyprint">
 &lt;script&gt;
     var map = L.map('map').setView([55.751667, 37.617778], 13);
     L.control.scale().addTo(map);
@@ -185,14 +195,18 @@ pre.prettyprint {
          maxZoom: 18
         , attribution: 'Map data &amp;copy; &lt;a href=&quot;http://openstreetmap.org&quot;&gt;OpenStreetMap&lt;/a&gt; contributors, &lt;a href=&quot;http://creativecommons.org/licenses/by-sa/2.0/&quot;&gt;CC-BY-SA&lt;/a&gt;, Imagery &#xfffd; &lt;a href=&quot;http://cloudmade.com&quot;&gt;CloudMade&lt;/a&gt;'
         }).addTo(map);
-    var rucadastre = new L.RuCadastre();
-    map.addLayer(rucadastre);
+    <b>var rucadastre = new L.RuCadastre();</b>
+    <b>map.addLayer(rucadastre);</b>
 &lt;/script&gt;
 </pre>
 
-
-            <p>Add RuCadastre identify tool</p>
-<pre class="prettyprint">
+          </section>
+          <section id="identify">
+            <div class="page-header">
+              <h1>Identify tool</h1>
+            </div>
+            <h3>Usage</h3>
+<pre class="prettyprint linenums">
 &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt; 
 
 &lt;script&gt;
@@ -200,12 +214,57 @@ pre.prettyprint {
     map.addLayer(ruCadastreIdentify);
 &lt;/script&gt;
 </pre>
+            
+            <h3>Options</h3>
+
+            <table class="table table-bordered table-striped">
+            <thead>
+             <tr>
+               <th style="width: 100px;">Name</th>
+               <th style="width: 50px;">type</th>
+               <th style="width: 50px;">default</th>
+               <th>description</th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+               <td>template</td>
+               <td>function(identify_data, find_data) {}</td>
+               <td></td>
+               <td>Render identify dialog</td>
+             </tr>
+            </tbody>
+          </table>
+
+            <h3>Example of customized idenfity dialog using bootstrap</h3>
+<pre class="prettyprint linenums">
+&lt;head&gt;
+&lt;link href=&quot;http://twitter.github.com/bootstrap/assets/css/bootstrap.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;/head&gt; 
+
+&lt;body&gt;
+&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt; 
+&lt;script src=&quot;http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;http://stevenlevithan.com/assets/misc/date.format.js&quot;&gt;&lt;/script&gt;  
+
+
+&lt;script&gt;
+      var ruCadastreIdentify = new L.RuCadastreIdentify({template:function(identify_data, find_data) {<br/>        var identify_attr = identify_data.results[0].attributes<br/>          , layerId = identify_data.results[0].layerId<br/>          , find_attr = find_data ? find_data.features[0].attributes : null;<br/><br/><br/>        return ''<br/>        + (layerId &lt;= 3 ? ''<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровый номер&lt;/b&gt;: '+identify_attr['Кадастровый номер земельного участка']+'&lt;/div&gt;'<br/>          + '&lt;ul class=&quot;nav nav-tabs&quot; style=&quot;width:300px;&quot;&gt;'<br/>          + '&lt;li class=&quot;active&quot;&gt;&lt;a href=&quot;#rucadinfo&quot; onclick=&quot;setActiveTab(event)&quot;&gt;Информация&lt;/a&gt;&lt;/li&gt;'<br/>          + '&lt;li&gt;&lt;a href=&quot;#rucadsrv&quot; onclick=&quot;setActiveTab(event)&quot;&gt;Услуги&lt;/a&gt;&lt;/li&gt;'<br/>          + '&lt;/ul&gt;' <br/>          + '&lt;div class=&quot;tab-content&quot;&gt;'  <br/>          + '&lt;div class=&quot;tab-pane active&quot; id=&quot;rucadinfo&quot; style=&quot;height:100px; overflow:auto&quot;&gt;'                           <br/>          + '&lt;div&gt;&lt;b&gt;Кадастровая единица&lt;/b&gt;: '+identify_data.results[0].layerName+'&lt;/div&gt;'   <br/>          + (find_data ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Адрес&lt;/b&gt;: ' +find_attr['OBJECT_ADDRESS']+ '&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Декларированная площадь&lt;/b&gt;: ' +find_attr['AREA_VALUE']+ ' кв. м&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Кадастровая стоимость&lt;/b&gt;: ' +find_attr['CAD_COST']+ ' руб.&lt;/div&gt;'<br/>            + '&lt;div&gt;&lt;b&gt;Дата постановки на учет&lt;/b&gt;: ' +(new Date(find_attr['DATE_CREATE'])).format(&quot;dd.mm.yyyy&quot;)+ '&lt;/div&gt;'<br/>          + '' : '')<br/>          + '&lt;div&gt;&lt;b&gt;Категория земель&lt;/b&gt;: ' +identify_attr['Категория земель (код)']+ '&lt;/div&gt;' <br/>          + '&lt;div&gt;&lt;b&gt;Статус земельного участка&lt;/b&gt;: '+identify_attr['Статус земельного участка (код)']+'&lt;/div&gt;'                 <br/>          + '&lt;/div&gt;'  <br/>          + '&lt;div class=&quot;tab-pane&quot; id=&quot;rucadsrv&quot; style=&quot;height:100px; overflow:auto&quot;&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_information_online?KN='+identify_attr['Кадастровый номер земельного участка']+'&quot;  target=&quot;_blank&quot;&gt;Справочная информация об объекте недвижимости в режиме онлайн&lt;/a&gt;&lt;br/&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_gkn_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000&quot;  target=&quot;_blank&quot;&gt;Запрос о предоставлении сведений ГКН&lt;/a&gt;&lt;br/&gt;'<br/>          + '&lt;a href=&quot;https://rosreestr.ru/wps/portal/cc_egrp_form_new?KN='+identify_attr['Кадастровый номер земельного участка']+'&objKind=002001001000&quot;  target=&quot;_blank&quot;&gt;Запрос о предоставлении сведений ЕГРП&lt;/a&gt;&lt;br/&gt;'            <br/>          + '&lt;/div&gt;'        <br/>          + '&lt;/div&gt;'                    <br/>          + '' : ''<br/>        + '')<br/><br/>        + (layerId &gt; 3 ? ''<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровый номер&lt;/b&gt;: '+identify_attr['Кадастровый номер']+'&lt;/div&gt;'<br/>          + '&lt;div&gt;&lt;b&gt;Кадастровая единица&lt;/b&gt;: '+identify_data.results[0].layerName+'&lt;/div&gt;'<br/>          + (layerId &gt;= 12 ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Наименование&lt;/b&gt;: '+identify_attr['Наименование']+'&lt;/div&gt;'<br/>          + '' : '')<br/>          + (layerId &lt; 12 ? ''<br/>            + '&lt;div&gt;&lt;b&gt;Категория земель&lt;/b&gt;: ' +identify_attr['Категория земель (код)']+ '&lt;/div&gt;' <br/>            + '&lt;div&gt;&lt;b&gt;Вид разрешенного использования&lt;/b&gt;: ' +identify_attr['Вид разрешенного использования (код)']+ '&lt;/div&gt;'   <br/>          + '' : '')    <br/>        + '' : '');<br/><br/><br/>      }});<br/><br/>      map.addControl(ruCadastreIdentify);  
+
+      function setActiveTab(e) {<br/>        e.preventDefault();<br/>        $(e.target).tab('show');<br/>      }
+
+&lt;/script&gt;
+&lt;/body&gt; 
+</pre>
+
 
 
           </section>
 
           <section id="source">
-            <h3>Source</h3>
+            <div class="page-header">
+              <h1>Source code</h1>
+            </div>
             <div class="jumbotron">
               <a class="btn btn-large btn-success" href="https://github.com/olegsmith/leaflet.rucadastre">View on GitHub</a>
               <a class="btn btn-large btn-success" href="https://github.com/olegsmith/leaflet.rucadastre/zipball/master">.zip file</a>
@@ -230,12 +289,12 @@ pre.prettyprint {
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
 
     <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
 
     <script src="leaflet.rucadastre.js"></script>
 
-    <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true"></script>
     <script src="http://stevenlevithan.com/assets/misc/date.format.js"></script>    
 
     <script>
@@ -309,6 +368,9 @@ pre.prettyprint {
         e.preventDefault();
         $(e.target).tab('show');
       }
+
+      // make code pretty
+      window.prettyPrint && prettyPrint() 
 
     </script>
 

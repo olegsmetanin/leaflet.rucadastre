@@ -1,7 +1,7 @@
 /*! Copyright (c) 2013 Oleg Smith (http://olegsmith.com)
- * Licensed under the MIT License (LICENSE.txt).
+ *  Licensed under the MIT License.
  *
- * L.RuCadastreIdentify uses jQuery for JSONP requests (http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js)
+ *  L.RuCadastreIdentify uses jQuery for JSONP requests (http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js)
  */
 
 /*
