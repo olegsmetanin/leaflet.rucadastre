@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0067)http://twitter.github.com/bootstrap/examples/marketing-narrow.html# -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>RuCadastre Leaflet plugin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -170,7 +170,7 @@ pre.prettyprint {
           </section>
           <section id="usage">
 
-            <h3>Usage</h3>
+            <h3>Usage тест1</h3>
             <p>Add script</p>
 <pre class="prettyprint">
 &lt;script src=&quot;http://olegsmith.github.com/leaflet.rucadastre/leaflet.rucadastre.js&quot;&gt;&lt;/script&gt; 
@@ -193,7 +193,7 @@ pre.prettyprint {
 
             <p>Add RuCadastre identify tool</p>
 <pre class="prettyprint">
-&lt;script src=&quot;https://raw.github.com/calvinmetcalf/leaflet-ajax/master/src/ajax.js&quot;&gt;&lt;/script&gt; 
+&lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;&gt;&lt;/script&gt; 
 
 &lt;script&gt;
     var ruCadastreIdentify = new L.RuCadastreIdentify();
@@ -232,7 +232,6 @@ pre.prettyprint {
     <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
 
     <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
-    <script src="https://raw.github.com/calvinmetcalf/leaflet-ajax/master/src/ajax.js"></script>
 
     <script src="leaflet.rucadastre.js"></script>
 
@@ -277,7 +276,7 @@ pre.prettyprint {
             + '<div><b>Дата постановки на учет</b>: ' +(new Date(find_attr['DATE_CREATE'])).format("dd.mm.yyyy")+ '</div>'
           + '' : '')
           + '<div><b>Категория земель</b>: ' +identify_attr['Категория земель (код)']+ '</div>' 
-          + '<div><b>Статус земельного участка</b>:'+identify_attr['Статус земельного участка (код)']+'</div>'                 
+          + '<div><b>Статус земельного участка</b>: '+identify_attr['Статус земельного участка (код)']+'</div>'                 
           + '</div>'  
           + '<div class="tab-pane" id="rucadsrv" style="height:100px; overflow:auto">'
           + '<a href="https://rosreestr.ru/wps/portal/cc_information_online?KN='+identify_attr['Кадастровый номер земельного участка']+'"  target="_blank">Справочная информация об объекте недвижимости в режиме онлайн</a><br/>'

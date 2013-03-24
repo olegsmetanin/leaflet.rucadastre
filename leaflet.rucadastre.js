@@ -1,7 +1,7 @@
 /*! Copyright (c) 2013 Oleg Smith (http://olegsmith.com)
  * Licensed under the MIT License (LICENSE.txt).
  *
- * L.RuCadastreIdentify uses L.Util.ajax (https://raw.github.com/calvinmetcalf/leaflet-ajax/master/src/ajax.js)
+ * L.RuCadastreIdentify uses jQuery for JSONP requests (http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js)
  */
 
 /*
@@ -258,8 +258,11 @@ L.RuCadastreIdentify = L.Control.extend({
             '%22spatialReference%22%3A{%22wkid%22%3A102100}}'+
             '&imageDisplay=1634%2C517%2C96&geometryType=esriGeometryPoint&sr=102100&layers=top';
 
+        // MSIE needs cors support
+        jQuery.support.cors = true;
 
-        L.Util.ajax(idenifyUrl,{jsonp:true},function(identify_data){
+        $.ajax({url:idenifyUrl,dataType:'jsonp'})
+        .done(function(identify_data){
             //console.log(identify_data);
             if (identify_data.results.length>0) {
                 var layers = 'show%3A'
@@ -300,7 +303,8 @@ L.RuCadastreIdentify = L.Control.extend({
                 var cadnum = identify_data.results[0].attributes['Строковый идентификатор ИПГУ']
                     , findUrl = that.options.findurl + '/find?cadNums=[%27'+cadnum+'%27]&onlyAttributes=false&returnGeometry=true&f=json'
                 if (!(typeof cadnum === 'undefined')) {
-                    L.Util.ajax(findUrl,{jsonp:true},function(find_data){
+                    $.ajax({url:findUrl,dataType:'jsonp'})
+                    .done(function(find_data){
                         if (find_data.features.length>0) {
                             that._popup.setContent(that.options.template(identify_data, find_data));
                         }    
