@@ -13,7 +13,7 @@ L.RuCadastreGeocoding = L.Control.extend({
         provider:'rucadastre'
         , i18n : {
             cadnum : '<b>Cadastral number</b>: '
-            , objectaddress : 'Object address</b>: '
+            , objectaddress : '<b>Object address</b>: '
             , area : '<b>Area (sq. m)</b>: '
             , cost : '<b>Cadastral value (rub.)</b>: '
             , name : '<b>Name</b>: '
