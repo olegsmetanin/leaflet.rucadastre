@@ -419,7 +419,13 @@ pre.prettyprint {
 
       map.addControl(ruCadastreIdentify);
 
-      var ruCadastreGeocoding = new L.RuCadastreGeocoding();
+      var ruCadastreGeocoding = new L.RuCadastreGeocoding({
+            cadnum : '<b>Кадастровый номер</b>: '
+            , objectaddress : 'Адрес</b>: '
+            , area : '<b>Площадь (кв. м.)</b>: '
+            , cost : '<b>Кадастровая стоимость (руб.)</b>: '
+            , name : '<b>Наименование</b>: '
+      });
 
       map.addControl(ruCadastreGeocoding);
 

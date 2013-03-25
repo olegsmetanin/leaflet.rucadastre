@@ -255,9 +255,13 @@ L.RuCadastreIdentify = L.Control.extend({
         map.off('popupclose', this._unselect, this);
     }
 
-    , _identify:function(e) {
+    , _identify : function (e) {
+        this.identify(e.latlng)
+    }
+
+    , identify:function(latlng) {
         var that=this
-            , xy = L.CRS.EPSG900913.project(e.latlng)
+            , xy = L.CRS.EPSG900913.project(latlng)
             , bnds = this._map.getBounds()
             , sw = L.CRS.EPSG900913.project(bnds.getSouthWest())
             , ne = L.CRS.EPSG900913.project(bnds.getNorthEast())
@@ -306,7 +310,7 @@ L.RuCadastreIdentify = L.Control.extend({
                 }
 
                 that._popup=new L.Popup();
-                that._popup.setLatLng(e.latlng).setContent(that.options.template(identify_data, null)).addTo(that._map);
+                that._popup.setLatLng(latlng).setContent(that.options.template(identify_data, null)).addTo(that._map);
                 that._map.openPopup(that._popup);
 
                 var cadnum = identify_data.results[0].attributes['Строковый идентификатор ИПГУ']
